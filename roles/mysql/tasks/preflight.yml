@@ -1,0 +1,5 @@
+- name: Ensure Python MySQL driver is present
+  apt:
+    name: python3-pymysql
+    state: present
+    update_cache: yes

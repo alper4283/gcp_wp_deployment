@@ -1,0 +1,3 @@
+- import_tasks: download.yml
+- import_tasks: configure.yml
+- import_tasks: permissions.yml

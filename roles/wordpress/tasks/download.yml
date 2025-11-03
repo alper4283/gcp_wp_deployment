@@ -1,0 +1,21 @@
+- name: Ensure web root directory exists
+  file:
+    path: "{{ wp_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Download latest WordPress tarball
+  get_url:
+    url: "{{ wp_download_url }}"
+    dest: /tmp/wordpress.tar.gz
+    mode: '0644'
+
+- name: Extract WordPress directly into web root (idempotent)
+  ansible.builtin.unarchive:
+    src: /tmp/wordpress.tar.gz
+    dest: "{{ wp_root }}"
+    remote_src: true
+    extra_opts: ["--strip-components=1"]
+    creates: "{{ wp_root }}/wp-settings.php"

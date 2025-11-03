@@ -1,0 +1,36 @@
+db_engine: mariadb-server
+db_name: wordpress
+db_user: wp_user
+mysql_bind_address: "127.0.0.1"
+
+php_packages:
+  - php-fpm
+  - php-mysql
+  - php-xml
+  - php-curl
+  - php-gd
+  - php-mbstring
+  - php-zip
+  - php-intl
+
+php_version: "8.2"
+php_fpm_service: "php{{ php_version }}-fpm"
+php_fpm_socket: "/run/php/php{{ php_version }}-fpm.sock"
+
+php_memory_limit: "256M"
+php_upload_max_filesize: "64M"
+php_post_max_size: "64M"
+php_max_execution_time: "120"
+
+server_name: "_"          
+wp_root: /var/www/html    
+client_max_body_size: "32m"     
+
+wp_download_url: https://wordpress.org/latest.tar.gz
+wp_db_name: "{{ db_name }}"
+wp_db_user: "{{ db_user }}"
+wp_db_password: "{{ db_password }}"
+wp_db_host: localhost
+
+mysql_root_password: "{{ vault_mysql_root_password }}"
+db_password: "{{ vault_wp_db_password }}"

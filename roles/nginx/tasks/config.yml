@@ -1,0 +1,37 @@
+- name: Remove default site (if present)
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload Nginx
+
+- name: Deploy WordPress server block
+  ansible.builtin.template:
+    src: wordpress.conf.j2
+    dest: /etc/nginx/sites-available/wordpress.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload Nginx
+
+- name: Enable WordPress site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/wordpress.conf
+    dest: /etc/nginx/sites-enabled/wordpress.conf
+    state: link
+  notify: Reload Nginx
+
+# sanity: ensure web root exists (wordpress role will fill it)
+- name: Ensure web root directory exists
+  ansible.builtin.file:
+    path: "{{ wp_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+# validate config before (or after) reload
+- name: Test Nginx configuration syntax
+  ansible.builtin.command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: nginx_test.rc != 0

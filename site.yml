@@ -1,0 +1,9 @@
+--- 
+- name: WordPress Deployment
+  hosts: vms
+  become: true
+  roles:
+    - mysql
+    - php
+    - nginx
+    - wordpress

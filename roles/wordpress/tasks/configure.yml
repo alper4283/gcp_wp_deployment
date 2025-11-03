@@ -1,0 +1,7 @@
+- name: Deploy wp-config.php
+  template:
+    src: wp-config.php.j2
+    dest: "{{ wp_root }}/wp-config.php"
+    owner: www-data
+    group: www-data
+    mode: '0640'

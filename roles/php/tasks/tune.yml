@@ -1,0 +1,26 @@
+- name: Determine FPM php.ini path
+  set_fact:
+    php_fpm_ini: "/etc/php/{{ php_version }}/fpm/php.ini"
+
+- name: Tune php.ini (idempotent line edits)
+  lineinfile:
+    path: "{{ php_fpm_ini }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+  loop:
+    - { regexp: '^memory_limit\s*=.*',        line: "memory_limit = {{ php_memory_limit }}" }
+    - { regexp: '^upload_max_filesize\s*=.*', line: "upload_max_filesize = {{ php_upload_max_filesize }}" }
+    - { regexp: '^post_max_size\s*=.*',       line: "post_max_size = {{ php_post_max_size }}" }
+    - { regexp: '^max_execution_time\s*=.*',  line: "max_execution_time = {{ php_max_execution_time }}" }
+  notify: Restart PHP-FPM
+
+- name: Check FPM socket exists
+  stat:
+    path: "{{ php_fpm_socket }}"
+  register: fpm_socket_stat
+
+- name: Fail if FPM socket is missing (helps catch version mismatch early)
+  fail:
+    msg: "Expected FPM socket {{ php_fpm_socket }} not found. Check php_version/php_fpm_service."
+  when: not fpm_socket_stat.stat.exists

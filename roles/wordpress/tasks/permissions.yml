@@ -1,0 +1,7 @@
+- name: Ensure ownership and permissions for WordPress directory
+  file:
+    path: "{{ wp_root }}"
+    owner: www-data
+    group: www-data
+    mode: '0755'
+    recurse: yes
