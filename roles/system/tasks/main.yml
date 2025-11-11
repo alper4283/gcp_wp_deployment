@@ -1,0 +1,57 @@
+---
+# Role: system
+# Tasks for performing OS updates and basic environment package installs.
+# Tagged so you can run only these steps when desired (e.g. --tags os_updates).
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_pkg_mgr == 'apt'
+  tags:
+    - os_updates
+    - system
+
+- name: Upgrade all apt packages (dist/upgrade)
+  apt:
+    upgrade: dist
+  when: ansible_pkg_mgr == 'apt'
+  tags:
+    - os_updates
+    - system
+
+- name: Clean apt cache
+  apt:
+    autoclean: yes
+  when: ansible_pkg_mgr == 'apt'
+  tags:
+    - os_updates
+    - system
+
+- name: Update yum/dnf cache
+  yum:
+    update_cache: yes
+  when: ansible_pkg_mgr in ['yum', 'dnf']
+  tags:
+    - os_updates
+    - system
+
+- name: Upgrade all yum/dnf packages
+  yum:
+    name: '*'
+    state: latest
+  when: ansible_pkg_mgr in ['yum', 'dnf']
+  tags:
+    - os_updates
+    - system
+
+- name: Ensure common environment packages are installed
+  package:
+    name:
+      - curl
+      - ca-certificates
+      - gnupg
+    state: present
+  tags:
+    - env_setup
+    - system

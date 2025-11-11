@@ -3,6 +3,8 @@
   hosts: vms
   become: true
   roles:
+    - role: system
+      tags: ['os_updates', 'env_setup', 'system']
     - mysql
     - php
     - nginx
