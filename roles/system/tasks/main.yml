@@ -1,7 +1,4 @@
 ---
-# Role: system
-# Tasks for performing OS updates and basic environment package installs.
-# Tagged so you can run only these steps when desired (e.g. --tags os_updates).
 
 - name: Update apt cache
   apt:
